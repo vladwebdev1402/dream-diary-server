@@ -6,7 +6,11 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
+
+import { ReqJwtUser } from 'src/types';
+
 import { DreamService } from './dream.service';
 import { CreateDreamDto } from './dto/create-dream.dto';
 import { UpdateDreamDto } from './dto/update-dream.dto';
@@ -21,8 +25,8 @@ export class DreamController {
   }
 
   @Get()
-  findAll() {
-    return this.dreamService.findAll();
+  findAll(@Req() { user }: ReqJwtUser) {
+    return this.dreamService.findAll(user.id);
   }
 
   @Get(':id')

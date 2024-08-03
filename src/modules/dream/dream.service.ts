@@ -1,15 +1,27 @@
 import { Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+
 import { CreateDreamDto } from './dto/create-dream.dto';
 import { UpdateDreamDto } from './dto/update-dream.dto';
 
+import { Dream } from './entities/dream.entity';
+
 @Injectable()
 export class DreamService {
-  create(createDreamDto: CreateDreamDto) {
-    return 'This action adds a new dream';
+  constructor(private dataSourse: DataSource) {}
+
+  async create(createDreamDto: CreateDreamDto) {
+    return await this.dataSourse.manager.save(Dream, createDreamDto);
   }
 
-  findAll() {
-    return `This action returns all dream`;
+  async findAll(userId: number) {
+    return this.dataSourse.manager.find(Dream, {
+      where: {
+        user: {
+          id: userId,
+        },
+      },
+    });
   }
 
   findOne(id: number) {
