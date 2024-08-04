@@ -15,5 +15,5 @@ export class Label {
 
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn()
-  user: User[];
+  user: User;
 }

@@ -42,9 +42,8 @@ export class DreamService {
           id: user.id,
         },
       },
-      // relations: ['user'],
     });
-    if (new Object(dream).hasOwnProperty('user')) delete dream.user;
+    
     return dream;
   }
 
