@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { DataSource } from 'typeorm';
 import { Request, Response, NextFunction } from 'express';
 
 import { JwtUser } from 'src/types';
@@ -13,7 +12,6 @@ import { JwtUser } from 'src/types';
 export class AuthMiddleware implements NestMiddleware {
   constructor(
     private jwtService: JwtService,
-    private dataSourse: DataSource,
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {

@@ -1,13 +1,36 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsIn,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Character } from 'src/modules/character';
-import { Label } from 'src/modules/label';
+
+import { CreateCharacterDto } from 'src/modules/character/dto';
+import { CreateLabelDto } from 'src/modules/label/dto';
+
+class Character extends CreateCharacterDto {
+  @IsNumber()
+  id: number;
+
+  @IsString()
+  description: string;
+
+  @IsString()
+  avatarUrl: string;
+}
+
+class Label extends CreateLabelDto {
+  @IsNumber()
+  id: number;
+
+  @IsString()
+  @IsIn(['gray', 'blue', 'red', 'gold', 'green'])
+  type: 'gray' | 'blue' | 'red' | 'gold' | 'green';
+}
 
 export class CreateDreamDto {
   @IsNotEmpty({ message: 'Название обязательно для заполнения' })
@@ -18,17 +41,15 @@ export class CreateDreamDto {
   @IsString()
   description: string;
 
-  avatarUrl?: string;
-
   @IsOptional()
-  @IsArray()
-  @ValidateNested()
   @Type(() => Character)
+  @IsArray()
+  @ValidateNested({ each: true })
   characters?: Character[];
 
   @IsOptional()
-  @IsArray()
-  @ValidateNested()
   @Type(() => Label)
+  @IsArray()
+  @ValidateNested({ each: true })
   labels?: Label[];
 }
