@@ -1,38 +1,74 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { CreateDreamDto } from './dto/create-dream.dto';
 import { UpdateDreamDto } from './dto/update-dream.dto';
+import { JwtUser } from 'src/types';
 
 import { Dream } from './entities/dream.entity';
 
 @Injectable()
 export class DreamService {
-  constructor(private dataSourse: DataSource) {}
+  constructor(
+    @InjectRepository(Dream) private dreamRepositry: Repository<Dream>,
+  ) {}
 
-  async create(createDreamDto: CreateDreamDto) {
-    return await this.dataSourse.manager.save(Dream, createDreamDto);
+  async create(createDreamDto: CreateDreamDto, user: JwtUser) {
+    const newDream = await this.dreamRepositry.save({
+      ...createDreamDto,
+      user,
+    });
+    delete newDream.user;
+    return newDream;
   }
 
   async findAll(userId: number) {
-    return this.dataSourse.manager.find(Dream, {
+    return await this.dreamRepositry.find({
       where: {
         user: {
           id: userId,
         },
       },
+      relations: ['characters', 'labels'],
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dream`;
+  async findOne(id: number, user: JwtUser) {
+    const dream = await this.dreamRepositry.findOne({
+      where: {
+        id: id,
+        user: {
+          id: user.id,
+        },
+      },
+      relations: ['user'],
+    });
+    if (new Object(dream).hasOwnProperty('user')) delete dream.user;
+    return dream;
   }
 
-  update(id: number, updateDreamDto: UpdateDreamDto) {
-    return `This action updates a #${id} dream`;
+  async update(id: number, updateDreamDto: UpdateDreamDto, user: JwtUser) {
+    const dreamForUpdate = await this.findOne(id, user);
+
+    if (!dreamForUpdate) return null;
+
+    const updatedDream = await this.dreamRepositry.save({
+      ...dreamForUpdate,
+      ...updateDreamDto,
+    });
+
+    if (new Object(updatedDream).hasOwnProperty('user'))
+      delete updatedDream.user;
+
+    return updatedDream;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} dream`;
+  async remove(id: number, user: JwtUser) {
+    const deletedDream = await this.findOne(id, user);
+
+    if (!deletedDream) return null;
+    
+    return await this.dreamRepositry.remove(deletedDream);
   }
 }

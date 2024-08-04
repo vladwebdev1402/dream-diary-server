@@ -1,4 +1,7 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested } from "class-validator";
+import { Character } from "src/modules/character";
+import { Label } from "src/modules/label";
 
 export class CreateDreamDto {
 
@@ -11,4 +14,16 @@ export class CreateDreamDto {
     description: string;
 
     avatarUrl?: string;
+
+    @IsOptional()
+    @IsArray()
+    @ValidateNested()
+    @Type(() => Character)
+    characters?: Character[]
+
+    @IsOptional()
+    @IsArray()
+    @ValidateNested()
+    @Type(() => Label)
+    labels?: Label[]
 }   

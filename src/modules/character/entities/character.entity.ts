@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { User } from 'src/modules/user';
 
@@ -17,5 +17,6 @@ export class Character {
   avatarUrl: string;
 
   @ManyToOne(() => User, (user) => user.id)
+  @JoinColumn()
   user: User[];
 }

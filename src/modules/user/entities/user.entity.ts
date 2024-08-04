@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Character } from 'src/modules/character';
 import { Dream } from 'src/modules/dream';
@@ -16,11 +16,14 @@ export class User {
   password: string;
 
   @OneToMany(() => Label, (label) => label.user)
+  @JoinColumn()
   labels: Label[];
 
   @OneToMany(() => Character, (character) => character.user)
+  @JoinColumn()
   characters: Character[];
 
   @OneToMany(() => Dream, (dream) => dream.user)
+  @JoinColumn()
   dreams: Dream[];
 }

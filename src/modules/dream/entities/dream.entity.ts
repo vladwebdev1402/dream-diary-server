@@ -1,6 +1,16 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { User } from 'src/modules/user';
+import { Label } from 'src/modules/label';
+import { Character } from 'src/modules/character';
 
 @Entity()
 export class Dream {
@@ -14,5 +24,14 @@ export class Dream {
   description: string;
 
   @ManyToOne(() => User, (user) => user.id)
-  user: User[];
+  @JoinColumn()
+  user: User;
+
+  @ManyToMany(() => Label, (label) => label.id)
+  @JoinTable()
+  labels: Label[];
+
+  @ManyToMany(() => Character, (character) => character.id)
+  @JoinTable()
+  characters: Character[];
 }
