@@ -42,6 +42,7 @@ export class DreamService {
           id: user.id,
         },
       },
+      relations: ['labels', 'characters'],
     });
 
     return dream;

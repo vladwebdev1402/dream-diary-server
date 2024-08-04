@@ -23,15 +23,21 @@ export class Dream {
   @Column()
   description: string;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id, {
+    cascade: ['remove', 'update'],
+  })
   @JoinColumn()
   user: User;
 
-  @ManyToMany(() => Label, (label) => label.id)
+  @ManyToMany(() => Label, (label) => label.id, {
+    cascade: ['remove', 'update'],
+  })
   @JoinTable()
   labels: Label[];
 
-  @ManyToMany(() => Character, (character) => character.id)
+  @ManyToMany(() => Character, (character) => character.id, {
+    cascade: ['remove', 'update'],
+  })
   @JoinTable()
   characters: Character[];
 }
