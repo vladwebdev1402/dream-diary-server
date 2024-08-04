@@ -52,4 +52,7 @@ export class CreateDreamDto {
   @IsArray()
   @ValidateNested({ each: true })
   labels?: Label[];
+
+  @IsOptional()
+  date: string;
 }

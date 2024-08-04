@@ -26,6 +26,9 @@ export class Dream {
   @Column({ default: '' })
   cover: string;
 
+  @Column({ default: () => 'CURRENT_TIMESTAMP', type: 'timestamp' })
+  date: Date;
+
   @ManyToOne(() => User, (user) => user.id, {
     cascade: ['remove', 'update'],
   })
