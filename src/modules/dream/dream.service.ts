@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { CreateDreamDto } from './dto/create-dream.dto';
-import { UpdateDreamDto } from './dto/update-dream.dto';
 import { JwtUser } from 'src/types';
 
+import { CreateDreamDto } from './dto/create-dream.dto';
+import { UpdateDreamDto } from './dto/update-dream.dto';
 import { Dream } from './entities/dream.entity';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class DreamService {
           id: user.id,
         },
       },
-      relations: ['user'],
+      // relations: ['user'],
     });
     if (new Object(dream).hasOwnProperty('user')) delete dream.user;
     return dream;
@@ -57,9 +57,6 @@ export class DreamService {
       ...dreamForUpdate,
       ...updateDreamDto,
     });
-
-    if (new Object(updatedDream).hasOwnProperty('user'))
-      delete updatedDream.user;
 
     return updatedDream;
   }

@@ -7,7 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { DataSource } from 'typeorm';
 import { Request, Response, NextFunction } from 'express';
 
-import { User } from 'src/modules';
+import { JwtUser } from 'src/types';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -30,20 +30,12 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     try {
-      const user = this.jwtService.verify<{ id: number }>(token);
-
-      req['user'] = await this.dataSourse.manager.findOne(User, {
-        where: {
-          id: user.id,
-        },
-        select: {
-          id: true,
-        },
-      });
+      const user = this.jwtService.verify<JwtUser>(token);
+      req['user'] = user;
 
       next();
     } catch {
-      throw new UnauthorizedException('Пользователь не авторизован');
+      throw new UnauthorizedException('Предоставлен неверный токен');
     }
   }
 }
