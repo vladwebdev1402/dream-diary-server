@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { Character } from 'src/modules/character';
 import { Dream } from 'src/modules/dream';

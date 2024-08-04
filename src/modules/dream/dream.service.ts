@@ -43,7 +43,7 @@ export class DreamService {
         },
       },
     });
-    
+
     return dream;
   }
 
@@ -64,7 +64,7 @@ export class DreamService {
     const deletedDream = await this.findOne(id, user);
 
     if (!deletedDream) return null;
-    
+
     return await this.dreamRepositry.remove(deletedDream);
   }
 }

@@ -73,7 +73,10 @@ export class DreamController extends BaseResolver {
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number, @Req() { user }: ReqJwtUser) {
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() { user }: ReqJwtUser,
+  ) {
     const dream = await this.dreamService.remove(id, user);
 
     if (!dream) {

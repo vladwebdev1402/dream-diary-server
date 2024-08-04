@@ -14,6 +14,6 @@ import { Label } from './entities/label.entity';
 })
 export class LabelModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes(LabelController)
+    consumer.apply(AuthMiddleware).forRoutes(LabelController);
   }
 }
