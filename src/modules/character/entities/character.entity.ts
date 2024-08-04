@@ -26,5 +26,5 @@ export class Character {
     cascade: ['remove', 'update']
   })
   @JoinColumn()
-  user: User[];
+  user: User;
 }

@@ -85,6 +85,6 @@ export class DreamController extends BaseResolver {
       );
     }
 
-    return this.resolveSuccess(dream);
+    return this.resolveSuccess({ dream });
   }
 }

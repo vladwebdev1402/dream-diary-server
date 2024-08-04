@@ -3,43 +3,101 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Req,
+  ParseIntPipe,
+  BadRequestException,
+  Put,
 } from '@nestjs/common';
+
+import { ReqJwtUser } from 'src/types';
+import { BaseResolver } from 'src/utils';
+
 import { CharacterService } from './character.service';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 
 @Controller('character')
-export class CharacterController {
-  constructor(private readonly characterService: CharacterService) {}
+export class CharacterController extends BaseResolver {
+  constructor(private readonly characterService: CharacterService) {
+    super();
+  }
 
   @Post()
-  create(@Body() createCharacterDto: CreateCharacterDto) {
-    return this.characterService.create(createCharacterDto);
+  async create(
+    @Body() createCharacterDto: CreateCharacterDto,
+    @Req() { user }: ReqJwtUser,
+  ) {
+    const character = await this.characterService.create(
+      createCharacterDto,
+      user,
+    );
+    return this.resolveSuccess({ character });
   }
 
   @Get()
-  findAll() {
-    return this.characterService.findAll();
+  async findAll(@Req() { user }: ReqJwtUser) {
+    const characters = await this.characterService.findAll(user);
+    return this.resolveSuccess({ characters });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.characterService.findOne(+id);
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() { user }: ReqJwtUser,
+  ) {
+    const character = await this.characterService.findOne(id, user);
+
+    if (!character) {
+      throw new BadRequestException(
+        this.resolveCatch(
+          'Персонаж не найден либо вы не имеете доступа к нему',
+        ),
+      );
+    }
+
+    return this.resolveSuccess({ character });
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateCharacterDto: UpdateCharacterDto,
+    @Req() { user }: ReqJwtUser,
   ) {
-    return this.characterService.update(+id, updateCharacterDto);
+    const character = await this.characterService.update(
+      id,
+      updateCharacterDto,
+      user,
+    );
+
+    if (!character) {
+      throw new BadRequestException(
+        this.resolveCatch(
+          'Персонаж не найден либо вы не имеете доступа к нему',
+        ),
+      );
+    }
+
+    return this.resolveSuccess({ character });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.characterService.remove(+id);
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() { user }: ReqJwtUser,
+  ) {
+    const character = await this.characterService.remove(id, user);
+
+    if (!character) {
+      throw new BadRequestException(
+        this.resolveCatch(
+          'Персонаж не найден либо вы не имеете доступа к нему',
+        ),
+      );
+    }
+
+    return this.resolveSuccess({ character });
   }
 }

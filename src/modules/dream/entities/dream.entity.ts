@@ -23,6 +23,9 @@ export class Dream {
   @Column()
   description: string;
 
+  @Column({ default: '' })
+  cover: string;
+
   @ManyToOne(() => User, (user) => user.id, {
     cascade: ['remove', 'update'],
   })
