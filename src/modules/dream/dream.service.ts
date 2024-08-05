@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { JwtUser } from 'src/types';
+import { FileService } from 'src/base';
 
 import { CreateDreamDto } from './dto/create-dream.dto';
 import { UpdateDreamDto } from './dto/update-dream.dto';
@@ -12,6 +13,7 @@ import { Dream } from './entities/dream.entity';
 export class DreamService {
   constructor(
     @InjectRepository(Dream) private dreamRepositry: Repository<Dream>,
+    private fileService: FileService,
   ) {}
 
   async create(createDreamDto: CreateDreamDto, user: JwtUser) {
@@ -48,14 +50,18 @@ export class DreamService {
     return dream;
   }
 
-  async update(id: number, updateDreamDto: UpdateDreamDto, user: JwtUser) {
+  async update(id: number, dto: UpdateDreamDto, user: JwtUser) {
     const dreamForUpdate = await this.findOne(id, user);
 
     if (!dreamForUpdate) return null;
 
+    if (dreamForUpdate.cover !== dto.cover && dreamForUpdate.cover !== '') {
+      this.fileService.deleteFile(dreamForUpdate.cover);
+    }
+
     const updatedDream = await this.dreamRepositry.save({
       ...dreamForUpdate,
-      ...updateDreamDto,
+      ...dto,
     });
 
     return updatedDream;
@@ -65,6 +71,10 @@ export class DreamService {
     const deletedDream = await this.findOne(id, user);
 
     if (!deletedDream) return null;
+
+    if (deletedDream.cover !== '') {
+      this.fileService.deleteFile(deletedDream.cover);
+    }
 
     return await this.dreamRepositry.remove(deletedDream);
   }

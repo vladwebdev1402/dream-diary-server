@@ -7,12 +7,14 @@ import { JwtUser } from 'src/types';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { Character } from './entities/character.entity';
+import { FileService } from '../../base/file/file.service';
 
 @Injectable()
 export class CharacterService {
   constructor(
     @InjectRepository(Character)
     private characterRepository: Repository<Character>,
+    private fileService: FileService,
   ) {}
 
   async create(createCharacterDto: CreateCharacterDto, user: JwtUser) {
@@ -55,18 +57,21 @@ export class CharacterService {
     return character;
   }
 
-  async update(
-    id: number,
-    updateCharacterDto: UpdateCharacterDto,
-    user: JwtUser,
-  ) {
+  async update(id: number, dto: UpdateCharacterDto, user: JwtUser) {
     const updateCharacter = await this.findOne(id, user);
 
     if (!updateCharacter) return null;
 
+    if (
+      updateCharacter.avatarUrl !== dto.avatarlUrl &&
+      updateCharacter.avatarUrl !== ''
+    ) {
+      this.fileService.deleteFile(updateCharacter.avatarUrl);
+    }
+
     const updatedCharacter = await this.characterRepository.save({
       ...updateCharacter,
-      ...updateCharacterDto,
+      ...dto,
     });
 
     return updatedCharacter;
@@ -76,6 +81,10 @@ export class CharacterService {
     const character = await this.findOne(id, user);
 
     if (!character) return null;
+
+    if (character.avatarUrl !== '') {
+      this.fileService.deleteFile(character.avatarUrl);
+    }
 
     const removedCharacter = await this.characterRepository.remove({
       ...character,

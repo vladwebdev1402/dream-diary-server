@@ -15,7 +15,7 @@ import {
   User,
   UserModule,
 } from './modules';
-import { FileModule } from './modules/file/file.module';
+import { FileModule } from './base';
 
 @Module({
   imports: [

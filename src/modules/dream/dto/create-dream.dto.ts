@@ -55,4 +55,8 @@ export class CreateDreamDto {
 
   @IsOptional()
   date: string;
+
+  @IsOptional()
+  @IsString()
+  cover: string;
 }

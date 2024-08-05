@@ -8,4 +8,8 @@ export class CreateCharacterDto {
   @IsOptional()
   @IsString()
   description: string;
+
+  @IsOptional()
+  @IsString()
+  avatarlUrl: string;
 }
