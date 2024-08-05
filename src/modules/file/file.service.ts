@@ -1,11 +1,20 @@
 import { Injectable } from '@nestjs/common';
 
-import { JwtUser } from 'src/types';
+import { deleteFile } from './helpers';
 
 @Injectable()
 export class FileService {
-  async saveFile(file: Express.Multer.File, user: JwtUser) {
-    console.log(file);
-   return "Здесь происходит сохранение файла наверно хз ваще";
+  async deleteFile(file: string[] | string) {
+    if (typeof file === 'string') {
+      deleteFile(file);
+    }
+
+    if (Array.isArray(file)) {
+      file.map((item) => {
+        deleteFile(item);
+      });
+    }
+
+    return;
   }
 }

@@ -25,9 +25,8 @@ export class FileController extends BaseResolver {
   @Get(':fileName')
   getFile(@Param('fileName') fileName: string, @Res() res: Response) {
     const filePath = resolve(__dirname, '..', '..', '..', 'uploads', fileName);
-
     if (fs.existsSync(filePath)) return res.sendFile(filePath);
-    else return { data: null };
+    return res.status(404).send('File not found');
   }
 
   @Post()
