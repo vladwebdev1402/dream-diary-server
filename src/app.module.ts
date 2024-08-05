@@ -15,6 +15,7 @@ import {
   User,
   UserModule,
 } from './modules';
+import { FileModule } from './modules/file/file.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import {
     CharacterModule,
     LabelModule,
     UserModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
