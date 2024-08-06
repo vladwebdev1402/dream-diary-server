@@ -1,2 +1,2 @@
 export const JWT_SECRET = 'secret key';
-export const API_URL = 'https://dream-diary.adaptable.app';
+export const API_URL = 'http://localhost:5000';
