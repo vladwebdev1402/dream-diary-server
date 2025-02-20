@@ -16,9 +16,11 @@ import {
   UserModule,
 } from './modules';
 import { FileModule } from './base';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     JwtModule.register({
       global: true,
       secret: JWT_SECRET,
@@ -26,11 +28,11 @@ import { FileModule } from './base';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '',
-      database: 'driam-diary-db',
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT) || 3306,
+      username: process.env.DB_USERNAME || 'user',
+      password: process.env.DB_PASSWORD || '',
+      database: process.env.DB_NAME || 'driam-diary-db',
       entities: [User, Label, Dream, Character],
       synchronize: true,
     }),

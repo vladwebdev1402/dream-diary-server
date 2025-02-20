@@ -56,9 +56,4 @@ export class UserService {
 
     return { token };
   }
-
-  testSignIn() {
-    const token = this.jwtService.sign({ id: -1 });
-    return { token };
-  }
 }

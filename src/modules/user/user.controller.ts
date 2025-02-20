@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 
 import { UserService } from './user.service';
 import { SignUserDto } from './dto/sign-user.dto';
@@ -15,10 +15,5 @@ export class UserController {
   @Post('/signin')
   signIn(@Body() data: SignUserDto) {
     return this.userService.signin(data);
-  }
-
-  @Get('/signin/test')
-  testSignIn() {
-    return this.userService.testSignIn();
   }
 }
