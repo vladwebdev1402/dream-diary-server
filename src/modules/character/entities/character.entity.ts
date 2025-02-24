@@ -23,7 +23,7 @@ export class Character {
   avatarUrl: string;
 
   @ManyToOne(() => User, (user) => user.id, {
-    cascade: ['remove', 'update']
+    cascade: ['remove', 'update'],
   })
   @JoinColumn()
   user: User;

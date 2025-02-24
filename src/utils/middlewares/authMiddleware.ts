@@ -10,9 +10,7 @@ import { JwtUser } from 'src/types';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  constructor(
-    private jwtService: JwtService,
-  ) {}
+  constructor(private jwtService: JwtService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
     const header = req.headers['authorization'];
