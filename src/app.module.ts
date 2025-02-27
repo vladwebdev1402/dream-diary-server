@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
-
 import { JWT_SECRET } from './constants/jwt';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
