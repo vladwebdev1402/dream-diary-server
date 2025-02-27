@@ -16,16 +16,16 @@ jobs:
       - name: Cache dependcies
         uses: actions/cache@v4
         env:
-          cache-name: npm-${{ hashFiles('package-lock.json')}}
+          cache-name: npm-${{ hashFiles('yarn.lock')}}
         with:
           path: ~/.npm
           key: ${{ env.cache-name }}
-          restore-keys: ${{ env.cache-name }} 
+          restore-keys: ${{ env.cache-name }}
       - name: Install dependcies
-        run: npm ci
+        run: yarn install --frozen-lockfile
       - name: Run prettier
-        run: npm run prettier
+        run: yarn format
       - name: Run linter
-        run: npm run lint
+        run: yarn lint
       - name: Run commitlint
         run: echo ${{ github.event.head_commit.message }} | npx commitlint
