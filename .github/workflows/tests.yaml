@@ -27,7 +27,5 @@ jobs:
         run: yarn format
       - name: Run linter
         run: yarn lint
-      - name: debug
-        run: echo ${{github.event}}
       - name: Run commitlint
-        run: echo ${{ github.event.head_commit.message }} | npx commitlint
+        run: echo "$(git log -1 --pretty=%B)" | npx commitlint
