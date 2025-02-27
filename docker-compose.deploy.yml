@@ -16,7 +16,7 @@ services:
     networks:
       - dream-diary-network
   backend:
-    build: ./
+    image: ${BACKEND_IMAGE}
     restart: always
     depends_on:
       - mysql
