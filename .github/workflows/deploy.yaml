@@ -1,0 +1,71 @@
+name: Deploy to server
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: node:22
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache dependcies
+        uses: actions/cache@v4
+        env:
+          cache-name: npm-${{ hashFiles('yarn.lock')}}
+        with:
+          path: ~/.npm
+          key: ${{ env.cache-name }}
+          restore-keys: ${{ env.cache-name }}
+      - name: Install dependcies
+        run: yarn install --frozen-lockfile
+      - name: Run prettier
+        run: yarn format
+      - name: Run linter
+        run: yarn lint
+      - name: Run commitlint
+        run: npx commitlint --last
+  push_to_registry:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login in docker
+        run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login --username ${{ secrets.DOCKER_USER }} --password-stdin
+      - name: Build image
+        run: docker build . -t "${{ secrets.BACKEND_IMAGE }}:latest"
+      - name: Push image
+        run: docker push "${{ secrets.BACKEND_IMAGE }}:latest"
+  deploy:
+    runs-on: ubuntu-latest
+    needs: push_to_registry
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create .env file
+        run: |
+          echo "DB_HOST=${{ secrets.DB_HOST }}" > .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "BACKEND_IMAGE=${{ secrets.BACKEND_IMAGE }}" >> .env
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
+      - name: Copy files
+        run: scp .env docker-compose.deploy.yml ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:/app/backend
+      - name: Restart service
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "
+          cd /app/backend &&
+          docker-compose -f docker-compose.deploy.yml down || true &&
+          echo ${{ secrets.DOCKER_TOKEN }} | docker login --username ${{ secrets.DOCKER_USER }} --password-stdin &&
+          docker image rm ${{ secrets.BACKEND_IMAGE }}:latest || true &&
+          docker pull ${{ secrets.BACKEND_IMAGE }}:latest &&
+          docker-compose -f docker-compose.deploy.yml up -d
+          "
