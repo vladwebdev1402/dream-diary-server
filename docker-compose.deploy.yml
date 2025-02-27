@@ -16,7 +16,7 @@ services:
     networks:
       - dream-diary-network
   backend:
-    image: ${BACKEND_IMAGE}
+    image: ${BACKEND_IMAGE}:latest
     restart: always
     depends_on:
       - mysql

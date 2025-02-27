@@ -29,7 +29,7 @@ jobs:
         run: yarn lint
       - name: Run commitlint
         run: npx commitlint --last
-  push_ro_registry:
+  push_to_registry:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,6 +45,6 @@ jobs:
       - name: Login in docker
         run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login --username ${{ secrets.DOCKER_USER }} --password-stdin
       - name: Build image
-        run: docker build . -t "${{ secrets.BACKEND_IMAGE }}"
+        run: docker build . -t "${{ secrets.BACKEND_IMAGE }}:latest"
       - name: Push image
-        run: docker push "${{ secrets.BACKEND_IMAGE }}"
+        run: docker push "${{ secrets.BACKEND_IMAGE }}:latest"
