@@ -28,4 +28,4 @@ jobs:
       - name: Run linter
         run: yarn lint
       - name: Run commitlint
-        run: echo "$(git log -1 --pretty=%B)" | npx commitlint
+        run: echo "$(git log -1 --pretty=%B | sed 's/[[:space:]]*$//')" | npx commitlint
