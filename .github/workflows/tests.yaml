@@ -1,0 +1,29 @@
+name: test
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  linters:
+    runs-on: ubuntu-latest
+    container:
+      image: node:22
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache dependcies
+        uses: actions/cache@v4
+        env:
+          cache-name: npm-${{ hashFiles('yarn.lock')}}
+        with:
+          path: ~/.npm
+          key: ${{ env.cache-name }}
+          restore-keys: ${{ env.cache-name }}
+      - name: Install dependcies
+        run: yarn install --frozen-lockfile
+      - name: Run prettier
+        run: yarn format
+      - name: Run linter
+        run: yarn lint
+      - name: Run commitlint
+        run: npx commitlint --last
