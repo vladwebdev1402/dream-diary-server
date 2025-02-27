@@ -1,0 +1,31 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  linters:
+    runs-on: ubuntu-latest
+    container:
+      image: node:22
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache dependcies
+        uses: actions/cache@v4
+        env:
+          cache-name: npm-${{ hashFiles('package-lock.json')}}
+        with:
+          path: ~/.npm
+          key: ${{ env.cache-name }}
+          restore-keys: ${{ env.cache-name }} 
+      - name: Install dependcies
+        run: npm ci
+      - name: Run prettier
+        run: npm run prettier
+      - name: Run linter
+        run: npm run lint
+      - name: Run commitlint
+        run: echo ${{ github.event.head_commit.message }} | npx commitlint
