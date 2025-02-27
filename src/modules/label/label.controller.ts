@@ -17,6 +17,8 @@ import { BaseResolver } from 'src/utils';
 import { LabelService } from './label.service';
 import { CreateLabelDto } from './dto/create-label.dto';
 import { UpdateLabelDto } from './dto/update-label.dto';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
+import { LabelDto } from './dto';
 
 @Controller('label')
 export class LabelController extends BaseResolver {
@@ -25,6 +27,13 @@ export class LabelController extends BaseResolver {
   }
 
   @Post()
+  @ApiBearerAuth()
+  @ApiCreatedResponse({
+    type: LabelDto,
+  })
+  @ApiBody({
+    type: CreateLabelDto,
+  })
   async create(
     @Body() createLabelDto: CreateLabelDto,
     @Req() { user }: ReqJwtUser,
@@ -34,12 +43,22 @@ export class LabelController extends BaseResolver {
   }
 
   @Get()
+  @ApiBearerAuth()
+  @ApiCreatedResponse({
+    type: LabelDto,
+    isArray: true,
+  })
   async findAll(@Req() { user }: ReqJwtUser) {
     const labels = await this.labelService.findAll(user);
     return this.resolveSuccess({ labels });
   }
 
   @Get(':id')
+  @ApiBearerAuth()
+  @ApiCreatedResponse({
+    type: LabelDto,
+    isArray: true,
+  })
   async findOne(
     @Param('id', ParseIntPipe) id: number,
     @Req() { user }: ReqJwtUser,
@@ -55,6 +74,13 @@ export class LabelController extends BaseResolver {
   }
 
   @Put(':id')
+  @ApiBearerAuth()
+  @ApiBody({
+    type: UpdateLabelDto,
+  })
+  @ApiCreatedResponse({
+    type: LabelDto,
+  })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateLabelDto: UpdateLabelDto,
@@ -72,6 +98,10 @@ export class LabelController extends BaseResolver {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @ApiCreatedResponse({
+    type: LabelDto,
+  })
   async remove(
     @Param('id', ParseIntPipe) id: number,
     @Req() { user }: ReqJwtUser,

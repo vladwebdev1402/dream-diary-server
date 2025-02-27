@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -14,12 +15,15 @@ import { CreateLabelDto } from 'src/modules/label/dto';
 
 class Character extends CreateCharacterDto {
   @IsNumber()
+  @ApiProperty()
   id: number;
 
   @IsString()
+  @ApiProperty()
   description: string;
 
   @IsString()
+  @ApiProperty()
   avatarUrl: string;
 }
 
@@ -35,28 +39,34 @@ class Label extends CreateLabelDto {
 export class CreateDreamDto {
   @IsNotEmpty({ message: 'Название обязательно для заполнения' })
   @IsString()
+  @ApiProperty()
   name: string;
 
   @IsNotEmpty({ message: 'Описание обязательно для заполнения' })
   @IsString()
+  @ApiProperty()
   description: string;
 
   @IsOptional()
   @Type(() => Character)
   @IsArray()
   @ValidateNested({ each: true })
+  @ApiProperty()
   characters?: Character[];
 
   @IsOptional()
   @Type(() => Label)
   @IsArray()
   @ValidateNested({ each: true })
+  @ApiProperty()
   labels?: Label[];
 
   @IsOptional()
+  @ApiProperty()
   date: string;
 
   @IsOptional()
   @IsString()
+  @ApiProperty()
   cover: string;
 }
