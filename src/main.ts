@@ -7,8 +7,6 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.setGlobalPrefix('/api');
-
   const config = new DocumentBuilder()
     .setTitle('Dream Diary Swagger')
     .setDescription('The Dream Diary API description')
